@@ -26,12 +26,13 @@ var program = require('commander');
 var cheerio = require('cheerio');
 var HTMLFILE_DEFAULT = "index.html";
 var CHECKSFILE_DEFAULT = "checks.json";
-var URL_DEFAULT = "http://boiling-fjord-5546.herokuapp.com/";
+// var URL_DEFAULT = "http://boiling-fjord-5546.herokuapp.com/";
 var rest = require('restler');
 var sys = require('util');
+var outfile = "jsonoutput.txt";
 
 
-var assertURLExists = function(URL) {
+/* var assertURLExists = function(URL) {
 rest.get(URL).on('complete', function(result) {
     console.log('URL: ', URL);
 if (result instanceof Error) {
@@ -42,7 +43,7 @@ if (result instanceof Error) {
   }
 });
 };
-
+*/
 
 var assertFileExists = function(infile) {
     var instr = infile.toString();
@@ -101,12 +102,14 @@ if(require.main == module) {
 	rest.get(program.url).on('complete', function(result, callback) {
 	var checkJson = checkHtml(result, program.checks);
 	var outJson = JSON.stringify(checkJson, null, 4);
-        console.log("outJson: ", outJson);
+        console.log(outJson);
+	fs.writeFileSync(outfile, outJson);
 });
     } else {
 	var checkJson = checkHtmlFile(program.file, program.checks);
         var outJson = JSON.stringify(checkJson, null, 4);
-        console.log("outJson: ", outJson);
+        console.log(outJson);
+	fs.writeFileSync(outfile, outJson);
 	}
 } else {
     exports.checkHtmlFile = checkHtmlFile;
